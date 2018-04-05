@@ -1,5 +1,6 @@
-package rocks.isor.eventsniff.eventsniff.listeners;
+package rocks.isor.eventsniff.eventsniff.listeners.block;
 
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -17,9 +18,6 @@ import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockMultiPlaceEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
-import org.bukkit.event.block.BlockPistonEvent;
-import org.bukkit.event.block.BlockPistonExtendEvent;
-import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
@@ -28,18 +26,23 @@ import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.NotePlayEvent;
 import org.bukkit.event.block.SignChangeEvent;
-import rocks.isor.eventsniff.eventsniff.CanBroadcastEvent;
+import rocks.isor.eventsniff.eventsniff.CanOutputEvent;
+import rocks.isor.eventsniff.eventsniff.Utils;
 
-public class BlockEventListener implements Listener, CanBroadcastEvent {
+import java.util.concurrent.TimeUnit;
+
+public class BlockEventListener implements Listener, CanOutputEvent {
 
 	/**
 	 * Generic Block Event processing
 	 * @param blockEvent the event to be processed
 	 */
 	private void onBlockEvent(BlockEvent blockEvent) {
-		String materialName = blockEvent.getBlock().getType().name();
+		Location location = blockEvent.getBlock().getLocation();
+		String coordinateString = Utils.generateCoordinateString(location);
+		String blockName = blockEvent.getBlock().getType().name();
 
-		broadcastEvent(blockEvent, materialName);
+		output(blockEvent, blockName + " at " + coordinateString);
 	}
 
 	@EventHandler
@@ -109,22 +112,12 @@ public class BlockEventListener implements Listener, CanBroadcastEvent {
 
 	@EventHandler
 	public void onBlockPhysicsEvent(BlockPhysicsEvent event) {
-		this.onBlockEvent(event);
-	}
+		String changedTo = event.getChangedType().name();
+		Location location = event.getBlock().getLocation();
+		String coordinateString = Utils.generateCoordinateString(location);
+		String blockName = event.getBlock().getType().name();
 
-	@EventHandler
-	public void onBlockPistonEvent(BlockPistonEvent event) {
-		this.onBlockEvent(event);
-	}
-
-	@EventHandler
-	public void onBlockPistonExtendEvent(BlockPistonExtendEvent event) {
-		this.onBlockEvent(event);
-	}
-
-	@EventHandler
-	public void onBlockPistonRetractEvent(BlockPistonRetractEvent event) {
-		this.onBlockEvent(event);
+		debouncedOutput(event, blockName + " to " + changedTo + " at " + coordinateString, 5, TimeUnit.MINUTES);
 	}
 
 	@EventHandler

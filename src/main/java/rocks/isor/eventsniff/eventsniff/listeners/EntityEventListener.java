@@ -55,18 +55,25 @@ import org.bukkit.event.entity.SlimeSplitEvent;
 import org.bukkit.event.entity.SpawnerSpawnEvent;
 import org.bukkit.event.entity.VillagerAcquireTradeEvent;
 import org.bukkit.event.entity.VillagerReplenishTradeEvent;
-import rocks.isor.eventsniff.eventsniff.CanBroadcastEvent;
+import rocks.isor.eventsniff.eventsniff.CanOutputEvent;
 
-public class EntityEventListener implements Listener, CanBroadcastEvent {
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+public class EntityEventListener implements Listener, CanOutputEvent {
+
+	Map<Integer, Date> airCheangeMap = new HashMap<>();
 
 	/**
 	 * Generic Entity Event processing
 	 * @param entityEvent the event to be processed
 	 */
 	private void onEntityEvent(EntityEvent entityEvent) {
-		String entityTypeName = entityEvent.getEntity().getType().name();
+		String entityName = entityEvent.getEntity().getName();
 
-		broadcastEvent(entityEvent, entityTypeName);
+		output(entityEvent, entityName);
 	}
 
 	@EventHandler
@@ -91,7 +98,10 @@ public class EntityEventListener implements Listener, CanBroadcastEvent {
 
 	@EventHandler
 	public void onEntityAirChangeEvent(EntityAirChangeEvent event) {
-		this.onEntityEvent(event);
+		int entityId = event.getEntity().getEntityId();
+		String entityTypeName = event.getEntity().getType().name();
+
+		debouncedOutput(event, entityTypeName + String.valueOf(entityId), 1, TimeUnit.MINUTES);
 	}
 
 	@EventHandler

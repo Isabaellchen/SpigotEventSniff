@@ -1,4 +1,4 @@
-package rocks.isor.eventsniff.eventsniff.listeners;
+package rocks.isor.eventsniff.eventsniff.listeners.vehicle;
 
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -12,20 +12,16 @@ import org.bukkit.event.vehicle.VehicleEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.event.vehicle.VehicleUpdateEvent;
-import rocks.isor.eventsniff.eventsniff.CanBroadcastEvent;
+import rocks.isor.eventsniff.eventsniff.CanOutputEvent;
+import rocks.isor.eventsniff.eventsniff.Utils;
 
-public class VehicleEventListener implements Listener, CanBroadcastEvent {
+public class VehicleEventListener implements Listener, CanOutputEvent {
 
 	private void onVehicleEvent(VehicleEvent vehicleEvent) {
 		Location location = vehicleEvent.getVehicle().getLocation();
-		String coordinates = generateCoordinateString(location);
+		String coordinates = Utils.generateCoordinateString(location);
 
-		broadcastEvent(vehicleEvent, coordinates);
-	}
-
-	@EventHandler
-	public void onVehicleCollisionEvent(VehicleCollisionEvent event) {
-		this.onVehicleEvent(event);
+		output(vehicleEvent, coordinates);
 	}
 
 	@EventHandler

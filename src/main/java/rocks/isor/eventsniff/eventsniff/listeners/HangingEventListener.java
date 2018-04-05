@@ -5,14 +5,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
-import rocks.isor.eventsniff.eventsniff.CanBroadcastEvent;
+import rocks.isor.eventsniff.eventsniff.CanOutputEvent;
 
-public class HangingEventListener implements Listener, CanBroadcastEvent {
+public class HangingEventListener implements Listener, CanOutputEvent {
 
 	private void onHangingEvent(HangingEvent hangingEvent) {
 		String hangingEntityName = hangingEvent.getEntity().getName();
 
-		broadcastEvent(hangingEvent, hangingEntityName);
+		output(hangingEvent, hangingEntityName);
 	}
 
 	@EventHandler

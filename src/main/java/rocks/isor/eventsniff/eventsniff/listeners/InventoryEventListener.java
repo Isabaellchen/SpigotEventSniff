@@ -11,15 +11,16 @@ import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
-import rocks.isor.eventsniff.eventsniff.CanBroadcastEvent;
+import rocks.isor.eventsniff.eventsniff.CanOutputEvent;
+import rocks.isor.eventsniff.eventsniff.Utils;
 
-public class InventoryEventListener implements Listener, CanBroadcastEvent {
+public class InventoryEventListener implements Listener, CanOutputEvent {
 
 	private void onInventoryEvent(InventoryEvent inventoryEvent) {
 		Location location = inventoryEvent.getInventory().getLocation();
-		String coordinates = generateCoordinateString(location);
+		String coordinates = Utils.generateCoordinateString(location);
 
-		broadcastEvent(inventoryEvent, coordinates);
+		output(inventoryEvent, coordinates);
 	}
 
 	@EventHandler

@@ -6,14 +6,14 @@ import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.weather.WeatherEvent;
-import rocks.isor.eventsniff.eventsniff.CanBroadcastEvent;
+import rocks.isor.eventsniff.eventsniff.CanOutputEvent;
 
-public class WeatherEventListener implements Listener, CanBroadcastEvent {
+public class WeatherEventListener implements Listener, CanOutputEvent {
 
 	private void onWeatherEvent(WeatherEvent weatherEvent) {
 		String worldName = weatherEvent.getWorld().getName();
 
-		broadcastEvent(weatherEvent, worldName);
+		output(weatherEvent, worldName);
 	}
 
 	@EventHandler

@@ -1,4 +1,4 @@
-package rocks.isor.eventsniff.eventsniff.listeners;
+package rocks.isor.eventsniff.eventsniff.listeners.server;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -9,15 +9,15 @@ import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.server.ServerEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.event.server.ServiceEvent;
-import rocks.isor.eventsniff.eventsniff.CanBroadcastEvent;
+import rocks.isor.eventsniff.eventsniff.CanOutputEvent;
 
-public class ServerEventListener implements Listener, CanBroadcastEvent {
+public class ServerEventListener implements Listener, CanOutputEvent {
 
 	private void onServerEvent(ServerEvent serverEvent) {
-		broadcastEvent(serverEvent, "EventSniff-LOCALHOST");
+		output(serverEvent, "LOCALHOST");
 	}
 
-	@EventHandler
+	// @EventHandler -- Disabled, so we do not create a loop
 	public void onBroadcastMessageEvent(BroadcastMessageEvent event) {
 		this.onServerEvent(event);
 	}
@@ -28,22 +28,7 @@ public class ServerEventListener implements Listener, CanBroadcastEvent {
 	}
 
 	@EventHandler
-	public void onPluginEvent(PluginEvent event) {
-		this.onServerEvent(event);
-	}
-
-	@EventHandler
-	public void onServerCommandEvent(ServerCommandEvent event) {
-		this.onServerEvent(event);
-	}
-
-	@EventHandler
 	public void onServerListPingEvent(ServerListPingEvent event) {
-		this.onServerEvent(event);
-	}
-
-	@EventHandler
-	public void onServiceEvent(ServiceEvent event) {
 		this.onServerEvent(event);
 	}
 }

@@ -1,4 +1,4 @@
-package rocks.isor.eventsniff.eventsniff.listeners;
+package rocks.isor.eventsniff.eventsniff.listeners.player;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -37,6 +37,7 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRegisterChannelEvent;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
@@ -45,16 +46,17 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
+import org.bukkit.event.player.PlayerUnregisterChannelEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
-import rocks.isor.eventsniff.eventsniff.CanBroadcastEvent;
+import rocks.isor.eventsniff.eventsniff.CanOutputEvent;
 
-public class PlayerEventListener implements Listener, CanBroadcastEvent {
+public class PlayerEventListener implements Listener, CanOutputEvent {
 
 	private void onPlayerEvent(PlayerEvent playerEvent) {
 		String playerName = playerEvent.getPlayer().getName();
 
-		broadcastEvent(playerEvent, playerName);
+		output(playerEvent, playerName);
 	}
 
 	@EventHandler
@@ -88,22 +90,12 @@ public class PlayerEventListener implements Listener, CanBroadcastEvent {
 	}
 
 	@EventHandler
-	public void onPlayerBucketEvent(PlayerBucketEvent event) {
-		this.onPlayerEvent(event);
-	}
-
-	@EventHandler
 	public void onPlayerChangedMainHandEvent(PlayerChangedMainHandEvent event) {
 		this.onPlayerEvent(event);
 	}
 
 	@EventHandler
 	public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) {
-		this.onPlayerEvent(event);
-	}
-
-	@EventHandler
-	public void onPlayerChannelEvent(PlayerChannelEvent event) {
 		this.onPlayerEvent(event);
 	}
 
@@ -149,11 +141,6 @@ public class PlayerEventListener implements Listener, CanBroadcastEvent {
 
 	@EventHandler
 	public void onPlayerGameModeChangeEvent(PlayerGameModeChangeEvent event) {
-		this.onPlayerEvent(event);
-	}
-
-	@EventHandler
-	public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
 		this.onPlayerEvent(event);
 	}
 
@@ -209,16 +196,6 @@ public class PlayerEventListener implements Listener, CanBroadcastEvent {
 
 	@EventHandler
 	public void onPlayerLoginEvent(PlayerLoginEvent event) {
-		this.onPlayerEvent(event);
-	}
-
-	@EventHandler
-	public void onPlayerMoveEvent(PlayerMoveEvent event) {
-		this.onPlayerEvent(event);
-	}
-
-	@EventHandler
-	public void onPlayerPickupItemEvent(PlayerPickupItemEvent event) {
 		this.onPlayerEvent(event);
 	}
 

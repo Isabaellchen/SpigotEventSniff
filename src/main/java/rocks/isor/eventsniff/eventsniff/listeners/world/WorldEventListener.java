@@ -1,4 +1,4 @@
-package rocks.isor.eventsniff.eventsniff.listeners;
+package rocks.isor.eventsniff.eventsniff.listeners.world;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,19 +11,14 @@ import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldSaveEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
-import rocks.isor.eventsniff.eventsniff.CanBroadcastEvent;
+import rocks.isor.eventsniff.eventsniff.CanOutputEvent;
 
-public class WorldEventListener implements Listener, CanBroadcastEvent {
+public class WorldEventListener implements Listener, CanOutputEvent {
 
 	private void onWorldEvent(WorldEvent worldEvent) {
 		String worldName = worldEvent.getWorld().getName();
 
-		broadcastEvent(worldEvent, worldName);
-	}
-
-	@EventHandler
-	public void onChunkEvent(ChunkEvent event) {
-		this.onWorldEvent(event);
+		output(worldEvent, worldName);
 	}
 
 	@EventHandler
