@@ -29,7 +29,10 @@ import org.bukkit.event.block.SignChangeEvent;
 import rocks.isor.eventsniff.eventsniff.CanOutputEvent;
 import rocks.isor.eventsniff.eventsniff.Utils;
 
-import java.util.concurrent.TimeUnit;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class BlockEventListener implements Listener, CanOutputEvent {
 
@@ -40,9 +43,9 @@ public class BlockEventListener implements Listener, CanOutputEvent {
 	private void onBlockEvent(BlockEvent blockEvent) {
 		Location location = blockEvent.getBlock().getLocation();
 		String coordinateString = Utils.generateCoordinateString(location);
-		String blockName = blockEvent.getBlock().getType().name();
+		String blockType = blockEvent.getBlock().getType().name();
 
-		output(blockEvent, blockName + " at " + coordinateString);
+		output(blockEvent, blockType + " at " + coordinateString);
 	}
 
 	@EventHandler
@@ -110,14 +113,21 @@ public class BlockEventListener implements Listener, CanOutputEvent {
 		this.onBlockEvent(event);
 	}
 
+	private Set<String> ignoredEventSourceTypes = new HashSet<>(Arrays.asList("GRASS", "DIRT"));
+
 	@EventHandler
 	public void onBlockPhysicsEvent(BlockPhysicsEvent event) {
-		String changedTo = event.getChangedType().name();
+		String eventSourceType = event.getChangedType().name();
+
+		if (ignoredEventSourceTypes.contains(eventSourceType)) {
+			return;
+		}
+
+		String targetBlockType = event.getBlock().getType().name();
 		Location location = event.getBlock().getLocation();
 		String coordinateString = Utils.generateCoordinateString(location);
-		String blockName = event.getBlock().getType().name();
 
-		debouncedOutput(event, blockName + " to " + changedTo + " at " + coordinateString, 5, TimeUnit.MINUTES);
+		throttledOutput(event, coordinateString, " Triggered by " + eventSourceType + ", affects " + targetBlockType + " at " + coordinateString);
 	}
 
 	@EventHandler

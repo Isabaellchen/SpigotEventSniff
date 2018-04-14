@@ -12,6 +12,10 @@ import rocks.isor.eventsniff.eventsniff.CanOutputEvent;
 public class ChunkEventListener implements Listener, CanOutputEvent {
 
 	private void onChunkEvent(ChunkEvent chunkEvent) {
+		this.onChunkEvent(chunkEvent, null);
+	}
+
+	private void onChunkEvent(ChunkEvent chunkEvent, String details) {
 		String worldName = chunkEvent.getWorld().getName();
 
 		Chunk chunk = chunkEvent.getChunk();
@@ -19,12 +23,18 @@ public class ChunkEventListener implements Listener, CanOutputEvent {
 		int z = chunk.getZ();
 		String coordinates =  x + "x" + z;
 
-		output(chunkEvent, worldName + " at " + coordinates);
+		String message = worldName + " at " + coordinates;
+
+		if (details != null) {
+			message += " - " + details;
+		}
+
+		output(chunkEvent, message);
 	}
 
 	@EventHandler
 	public void onChunkLoadEvent(ChunkLoadEvent event) {
-		this.onChunkEvent(event);
+		//this.onChunkEvent(event);
 	}
 
 	@EventHandler
@@ -34,6 +44,6 @@ public class ChunkEventListener implements Listener, CanOutputEvent {
 
 	@EventHandler
 	public void onChunkUnloadEvent(ChunkUnloadEvent event) {
-		this.onChunkEvent(event);
+		//this.onChunkEvent(event);
 	}
 }

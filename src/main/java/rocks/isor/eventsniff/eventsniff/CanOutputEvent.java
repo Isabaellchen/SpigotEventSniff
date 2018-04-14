@@ -1,7 +1,6 @@
 package rocks.isor.eventsniff.eventsniff;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.event.Event;
 
 import java.util.HashMap;
@@ -11,14 +10,13 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
 
 public interface CanOutputEvent {
 
-	default void output(Event event, String specialTarget) {
+	default void output(Event event, String message) {
 		String eventName = event.getEventName();
 
-		Bukkit.broadcastMessage(eventName + " on " + specialTarget);
+		Bukkit.getLogger().info(eventName + " fired: " + message);
 	}
 
 	/**
@@ -31,13 +29,17 @@ public interface CanOutputEvent {
 	 */
 	ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
-	default void debouncedOutput(Event event, String uniqueIdentifier, long delay, TimeUnit timeUnit) {
+	default void throttledOutput(Event event, String uniqueIdentifier, String message) {
+		throttledOutput(event, uniqueIdentifier, message, 1, TimeUnit.MINUTES);
+	}
+
+	default void throttledOutput(Event event, String uniqueIdentifier, String message, long delay, TimeUnit timeUnit) {
 		String eventName = event.getEventName();
 		Set<String> cache = debounceCache.getOrDefault(eventName, new HashSet<>());
 
 		if (!cache.contains(uniqueIdentifier)) {
 
-			output(event, uniqueIdentifier);
+			output(event, message);
 
 			cache.add(uniqueIdentifier);
 			debounceCache.put(eventName, cache);

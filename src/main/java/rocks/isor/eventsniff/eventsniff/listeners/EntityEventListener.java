@@ -56,24 +56,22 @@ import org.bukkit.event.entity.SpawnerSpawnEvent;
 import org.bukkit.event.entity.VillagerAcquireTradeEvent;
 import org.bukkit.event.entity.VillagerReplenishTradeEvent;
 import rocks.isor.eventsniff.eventsniff.CanOutputEvent;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import rocks.isor.eventsniff.eventsniff.Utils;
 
 public class EntityEventListener implements Listener, CanOutputEvent {
 
-	Map<Integer, Date> airCheangeMap = new HashMap<>();
-
-	/**
-	 * Generic Entity Event processing
-	 * @param entityEvent the event to be processed
-	 */
 	private void onEntityEvent(EntityEvent entityEvent) {
-		String entityName = entityEvent.getEntity().getName();
+		this.onEntityEvent(entityEvent, null);
+	}
 
-		output(entityEvent, entityName);
+	private void onEntityEvent(EntityEvent entityEvent, String details) {
+		String message = entityEvent.getEntity().getName();
+
+		if (details != null) {
+			message += " - " + details;
+		}
+
+		output(entityEvent, message);
 	}
 
 	@EventHandler
@@ -101,7 +99,7 @@ public class EntityEventListener implements Listener, CanOutputEvent {
 		int entityId = event.getEntity().getEntityId();
 		String entityTypeName = event.getEntity().getType().name();
 
-		debouncedOutput(event, entityTypeName + String.valueOf(entityId), 1, TimeUnit.MINUTES);
+		throttledOutput(event, String.valueOf(entityId),"Triggered on " + entityTypeName);
 	}
 
 	@EventHandler
@@ -151,7 +149,9 @@ public class EntityEventListener implements Listener, CanOutputEvent {
 
 	@EventHandler
 	public void onEntityDamageEvent(EntityDamageEvent event) {
-		this.onEntityEvent(event);
+		String details = Utils.generateJsonString(event);
+
+		this.onEntityEvent(event, details);
 	}
 
 	@EventHandler
@@ -266,7 +266,9 @@ public class EntityEventListener implements Listener, CanOutputEvent {
 
 	@EventHandler
 	public void onItemDespawnEvent(ItemDespawnEvent event) {
-		this.onEntityEvent(event);
+		String details = Utils.generateJsonString(event);
+
+		this.onEntityEvent(event, details);
 	}
 
 	@EventHandler
@@ -276,7 +278,9 @@ public class EntityEventListener implements Listener, CanOutputEvent {
 
 	@EventHandler
 	public void onItemSpawnEvent(ItemSpawnEvent event) {
-		this.onEntityEvent(event);
+		String details = Utils.generateJsonString(event);
+
+		this.onEntityEvent(event, details);
 	}
 
 	@EventHandler
