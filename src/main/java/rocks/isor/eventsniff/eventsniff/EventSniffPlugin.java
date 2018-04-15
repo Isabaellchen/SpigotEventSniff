@@ -39,27 +39,27 @@ public class EventSniffPlugin extends JavaPlugin {
 
 
 		getLogger().info("* Setting up Listener instances");
-		listeners.add(new BlockEventListener());
-		listeners.add(new BlockPistonEventListener());
-		listeners.add(new EntityEventListener());
-		listeners.add(new HangingEventListener());
-		listeners.add(new InventoryEventListener());
-		listeners.add(new MiscEventListener());
-		listeners.add(new PlayerEventListener());
-		listeners.add(new PlayerChannelEventListener());
-		listeners.add(new PlayerBucketEventListener());
-		listeners.add(new PlayerInteractEntityEventListener());
-		listeners.add(new PlayerMoveEventListener());
-		listeners.add(new PlayerPickupItemEventListener());
-		listeners.add(new ServerEventListener());
-		listeners.add(new PluginEventListener());
-		listeners.add(new ServerCommandEventListener());
-		listeners.add(new ServiceEventListener());
-		listeners.add(new VehicleEventListener());
-		listeners.add(new VehicleCollisionEventListener());
-		listeners.add(new WeatherEventListener());
-		listeners.add(new WorldEventListener());
-		listeners.add(new ChunkEventListener());
+		listeners.add(new BlockEventListener(false));
+		listeners.add(new BlockPistonEventListener(false));
+		listeners.add(new EntityEventListener(false));
+		listeners.add(new HangingEventListener(false));
+		listeners.add(new InventoryEventListener(false));
+		listeners.add(new MiscEventListener(false));
+		listeners.add(new PlayerEventListener(false));
+		listeners.add(new PlayerChannelEventListener(false));
+		listeners.add(new PlayerBucketEventListener(false));
+		listeners.add(new PlayerInteractEntityEventListener(false));
+		listeners.add(new PlayerMoveEventListener(false));
+		listeners.add(new PlayerPickupItemEventListener(false));
+		listeners.add(new ServerEventListener(false));
+		listeners.add(new PluginEventListener(false));
+		listeners.add(new ServerCommandEventListener(false));
+		listeners.add(new ServiceEventListener(false));
+		listeners.add(new VehicleEventListener(false));
+		listeners.add(new VehicleCollisionEventListener(false));
+		listeners.add(new WeatherEventListener(false));
+		listeners.add(new WorldEventListener(false));
+		listeners.add(new ChunkEventListener(false));
 
 
 		getLogger().info("* Registering listeners...");

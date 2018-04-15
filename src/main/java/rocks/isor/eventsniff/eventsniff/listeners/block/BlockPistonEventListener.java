@@ -11,22 +11,28 @@ import rocks.isor.eventsniff.eventsniff.Utils;
 
 public class BlockPistonEventListener implements Listener, CanOutputEvent{
 
-	private void onBlockPistonEvent(BlockPistonEvent blockPistonEvent) {
+	private boolean isVerbose;
+
+	public BlockPistonEventListener(boolean isVerbose) {
+		this.isVerbose = isVerbose;
+	}
+
+	private void onBlockPistonEvent(BlockPistonEvent blockPistonEvent, boolean verbose) {
 		Location location = blockPistonEvent.getBlock().getLocation();
 
 		String coordinateString = Utils.generateCoordinateString(location);
 
-		output(blockPistonEvent, coordinateString);
+		output(blockPistonEvent, coordinateString, isVerbose || verbose);
 	}
 
 	@EventHandler
 	public void onBlockPistonExtendEvent(BlockPistonExtendEvent event) {
-		this.onBlockPistonEvent(event);
+		this.onBlockPistonEvent(event, false);
 	}
 
 	@EventHandler
 	public void onBlockPistonRetractEvent(BlockPistonRetractEvent event) {
-		this.onBlockPistonEvent(event);
+		this.onBlockPistonEvent(event, false);
 	}
 }
 

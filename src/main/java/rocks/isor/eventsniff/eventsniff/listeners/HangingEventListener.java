@@ -9,19 +9,25 @@ import rocks.isor.eventsniff.eventsniff.CanOutputEvent;
 
 public class HangingEventListener implements Listener, CanOutputEvent {
 
-	private void onHangingEvent(HangingEvent hangingEvent) {
+	private boolean isVerbose;
+
+	public HangingEventListener(boolean isVerbose) {
+		this.isVerbose = isVerbose;
+	}
+
+	private void onHangingEvent(HangingEvent hangingEvent, boolean verbose) {
 		String hangingEntityName = hangingEvent.getEntity().getName();
 
-		output(hangingEvent, hangingEntityName);
+		output(hangingEvent, hangingEntityName, isVerbose || verbose);
 	}
 
 	@EventHandler
 	public void onHangingBreakEvent(HangingBreakEvent event) {
-		this.onHangingEvent(event);
+		this.onHangingEvent(event, false);
 	}
 
 	@EventHandler
 	public void onHangingPlaceEvent(HangingPlaceEvent event) {
-		this.onHangingEvent(event);
+		this.onHangingEvent(event, false);
 	}
 }

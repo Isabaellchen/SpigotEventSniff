@@ -16,45 +16,51 @@ import rocks.isor.eventsniff.eventsniff.Utils;
 
 public class InventoryEventListener implements Listener, CanOutputEvent {
 
-	private void onInventoryEvent(InventoryEvent inventoryEvent) {
+	private boolean isVerbose;
+
+	public InventoryEventListener(boolean isVerbose) {
+		this.isVerbose = isVerbose;
+	}
+
+	private void onInventoryEvent(InventoryEvent inventoryEvent, boolean verbose) {
 		Location location = inventoryEvent.getInventory().getLocation();
 		String coordinates = Utils.generateCoordinateString(location);
 
-		output(inventoryEvent, coordinates);
+		output(inventoryEvent, coordinates, isVerbose || verbose);
 	}
 
 	@EventHandler
 	public void onEnchantItemEvent(EnchantItemEvent event) {
-		this.onInventoryEvent(event);
+		this.onInventoryEvent(event, false);
 	}
 
 	@EventHandler
 	public void onInventoryCloseEvent(InventoryCloseEvent event) {
-		this.onInventoryEvent(event);
+		this.onInventoryEvent(event, false);
 	}
 
 	@EventHandler
 	public void onInventoryInteractEvent(InventoryInteractEvent event) {
-		this.onInventoryEvent(event);
+		this.onInventoryEvent(event, false);
 	}
 
 	@EventHandler
 	public void onInventoryOpenEvent(InventoryOpenEvent event) {
-		this.onInventoryEvent(event);
+		this.onInventoryEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPrepareAnvilEvent(PrepareAnvilEvent event) {
-		this.onInventoryEvent(event);
+		this.onInventoryEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPrepareItemCraftEvent(PrepareItemCraftEvent event) {
-		this.onInventoryEvent(event);
+		this.onInventoryEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPrepareItemEnchantEvent(PrepareItemEnchantEvent event) {
-		this.onInventoryEvent(event);
+		this.onInventoryEvent(event, false);
 	}
 }

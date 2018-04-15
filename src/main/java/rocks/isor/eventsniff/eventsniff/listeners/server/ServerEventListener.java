@@ -10,22 +10,28 @@ import rocks.isor.eventsniff.eventsniff.CanOutputEvent;
 
 public class ServerEventListener implements Listener, CanOutputEvent {
 
-	private void onServerEvent(ServerEvent serverEvent) {
-		output(serverEvent, "LOCALHOST");
+	private boolean isVerbose;
+
+	public ServerEventListener(boolean isVerbose) {
+		this.isVerbose = isVerbose;
+	}
+
+	private void onServerEvent(ServerEvent serverEvent, boolean verbose) {
+		output(serverEvent, "LOCALHOST", isVerbose || verbose);
 	}
 
 	@EventHandler
 	public void onBroadcastMessageEvent(BroadcastMessageEvent event) {
-		this.onServerEvent(event);
+		this.onServerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onMapInitializeEvent(MapInitializeEvent event) {
-		this.onServerEvent(event);
+		this.onServerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onServerListPingEvent(ServerListPingEvent event) {
-		this.onServerEvent(event);
+		this.onServerEvent(event, false);
 	}
 }

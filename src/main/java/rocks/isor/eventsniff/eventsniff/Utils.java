@@ -25,43 +25,39 @@ public class Utils {
 	private static String recursiveObjectReader(Object o, Set<String> parentObjects, Collection parentCollection, int depth) {
 
 		if (o == null) {
-			return "{ \"object-is-null\": true }";
+			return "null";
 		}
-
-		Class clazz = o.getClass();
 
 		char[] repeat = new char[depth * 2];
 		Arrays.fill(repeat, '\t');
 		String indent = new String(repeat);
 
+		Class clazz = o.getClass();
 		if (clazz.isPrimitive()) {
 			return String.valueOf(o);
 		} else if (clazz.equals(String.class)) {
 			return "\"" + o + "\"";
 		}
 
-		String objectId = o.hashCode() + o.toString();
-
-		if (parentObjects.contains(objectId)) {
-			return "{ \"cyclic-recursion-detected\": true }";
-		}
-
-		Set<String> clonedHistory = new HashSet<>(parentObjects);
-		clonedHistory.add(objectId);
-
-
 		Set<String> excluded = new HashSet<>(Arrays.asList(
 				"Class", // Not interested in java itself
 				"File" // Files are a tree of paths, convoluting the json
 		));
-
 		String simpleName = clazz.getSimpleName();
 		if (excluded.contains(simpleName)) {
-			return "{ \"excluded-class-detected\": true }";
+			Bukkit.getLogger().finer(indent + "Excluded class " + simpleName);
+			return "{}";
 		}
 
-		Bukkit.getLogger().finer(indent + "scanning " + simpleName);
+		String objectId = o.hashCode() + o.toString();
+		if (parentObjects.contains(objectId)) {
+			Bukkit.getLogger().finer(indent + "Cyclic Recursion detected " + simpleName);
+			return "{}";
+		}
+		Set<String> clonedHistory = new HashSet<>(parentObjects);
+		clonedHistory.add(objectId);
 
+		Bukkit.getLogger().finer(indent + "scanning " + simpleName);
 		Method[] methods = clazz.getDeclaredMethods();
 		StringBuilder json = new StringBuilder("{");
 
@@ -70,31 +66,34 @@ public class Utils {
 				"getChunk", // Chunks are too big to marshal
 				"getWorld", // Worlds are even bigger
 				"getRegisteredListeners", // Lots of recursion
-				"getHandlerLists" // 	"		"
+				"getHandlerLists" // ... same
 		));
 
 		try {
 			for (Method method : methods) {
+				String methodName = method.getName();
+				if (excludedMethods.contains(methodName)) {
+					Bukkit.getLogger().finer(indent + "Excluded method " + methodName);
+					continue;
+				}
+
 				if (method.getParameterCount() > 0) {
+					Bukkit.getLogger().finer(indent + "Has parameters " + methodName);
 					continue;
 				}
 
 				int modifiers = method.getModifiers();
 				if (Modifier.isPrivate(modifiers) || Modifier.isProtected(modifiers)) {
+					Bukkit.getLogger().finer(indent + "Non-public method " + methodName);
 					continue;
 				}
 
-				String methodName = method.getName();
-				json.append(" \"").append(methodName).append("\": ");
 
 				Matcher matcher = GETTER_METHODS.matcher(methodName);
 
 				if (matcher.matches()) {
 
-					if (excludedMethods.contains(methodName)) {
-						json.append("{ \"excluded-method-detected\": true }");
-						continue;
-					}
+					json.append(" \"").append(methodName).append("\": ");
 
 					Class<?> returnType = method.getReturnType();
 					method.setAccessible(true);
@@ -106,46 +105,46 @@ public class Utils {
 					} else if (returnType.equals(String.class)) {
 						json.append("\"").append(method.invoke(o)).append("\"");
 					} else if (returnType.isArray() || Collection.class.isAssignableFrom(returnType)) {
-						json.append("[");
 
 						Collection collection;
 						if (returnType.isArray()) {
-							Bukkit.getLogger().finer(indent + "\t\tconverting array "+returnType.getSimpleName()+" to collection");
+							Bukkit.getLogger().finer(indent + "\t\tconverting array " + returnType.getSimpleName() + " to collection");
 
 							Object reflectedArray = method.invoke(o);
 
 							collection = objectToCollection(reflectedArray);
 						} else {
-							Bukkit.getLogger().finer(indent + "\t\tconverting "+returnType.getSimpleName()+" to collection");
+							Bukkit.getLogger().finer(indent + "\t\tconverting " + returnType.getSimpleName() + " to collection");
 							collection = (Collection) method.invoke(o);
 						}
 
+						json.append("[");
+
 						Bukkit.getLogger().finer(indent + "\t\tlist " + (returnType.getComponentType() == null ? "null" : returnType.getComponentType().getSimpleName()));
 						if (collection != null && !collection.isEmpty()) {
-
-							if (collection.equals(parentCollection)) {
-								return "{ \"cyclic-recursion-detected\": true }";
-							}
-
-							for (Object item : collection) {
-
-								json.append(recursiveObjectReader(item, clonedHistory, collection, depth + 1));
-								json.append(",");
-							}
-							if (json.charAt(json.length() - 1) == ',') {
-								json.deleteCharAt(json.length() - 1);
+							if (!collection.equals(parentCollection)) {
+								for (Object item : collection) {
+									json.append(recursiveObjectReader(item, clonedHistory, collection, depth + 1));
+									json.append(",");
+								}
+								if (json.charAt(json.length() - 1) == ',') {
+									json.deleteCharAt(json.length() - 1);
+								}
+							} else {
+								Bukkit.getLogger().finer(indent + "\t\tRecursive collection call " + methodName);
 							}
 						}
 
 						json.append("]");
 					} else {
 						Bukkit.getLogger().finer(indent + "\t\tobject " + returnType.getSimpleName());
-						json.append(recursiveObjectReader(method.invoke(o), clonedHistory, parentCollection,depth + 1));
+						json.append(recursiveObjectReader(method.invoke(o), clonedHistory, parentCollection, depth + 1));
 					}
+
+					json.append(",");
 				} else {
-					json.append("\"no-getter\"");
+					Bukkit.getLogger().finer(indent + "Not a getter method " + methodName);
 				}
-				json.append(",");
 			}
 		} catch (IllegalAccessException | InvocationTargetException e) {
 			e.printStackTrace();
@@ -182,19 +181,18 @@ public class Utils {
 	}
 
 	/**
-	 * 	Regex Search & Replace Pattern to generate ALL the methods from a list of words
+	 * 	Regex Search & Replace Pattern to generate ALL the methods from a table of words
 	 *
 	 * Search:
 
-	(\t+)(\w+)(\n)
+	 (\t+)(\w+)(\n)
 
 	 *
 	 * Replace:
 
-	@EventHandler
-	public void on$2($2 event) {
-		this.onBlockEvent(event);
-	}
+	 @EventHandler public void on$2($2 event) {
+	 this.onBlockEvent(event);
+	 }
 
-	*/
+	 */
 }

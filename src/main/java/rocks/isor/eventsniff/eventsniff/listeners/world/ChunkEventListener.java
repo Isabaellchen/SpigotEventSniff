@@ -10,12 +10,18 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 import rocks.isor.eventsniff.eventsniff.CanOutputEvent;
 
 public class ChunkEventListener implements Listener, CanOutputEvent {
+	
+	private boolean isVerbose;
 
-	private void onChunkEvent(ChunkEvent chunkEvent) {
-		this.onChunkEvent(chunkEvent, null);
+	public ChunkEventListener(boolean isVerbose) {
+		this.isVerbose = isVerbose;
 	}
 
-	private void onChunkEvent(ChunkEvent chunkEvent, String details) {
+	private void onChunkEvent(ChunkEvent chunkEvent, boolean verbose) {
+		this.onChunkEvent(chunkEvent, null, verbose);
+	}
+
+	private void onChunkEvent(ChunkEvent chunkEvent, String details, boolean verbose) {
 		String worldName = chunkEvent.getWorld().getName();
 
 		Chunk chunk = chunkEvent.getChunk();
@@ -29,21 +35,21 @@ public class ChunkEventListener implements Listener, CanOutputEvent {
 			message += " - " + details;
 		}
 
-		output(chunkEvent, message);
+		output(chunkEvent, message, isVerbose || verbose);
 	}
 
 	@EventHandler
 	public void onChunkLoadEvent(ChunkLoadEvent event) {
-		//this.onChunkEvent(event);
+		//this.onChunkEvent(event, false);
 	}
 
 	@EventHandler
 	public void onChunkPopulateEvent(ChunkPopulateEvent event) {
-		this.onChunkEvent(event);
+		this.onChunkEvent(event, false);
 	}
 
 	@EventHandler
 	public void onChunkUnloadEvent(ChunkUnloadEvent event) {
-		//this.onChunkEvent(event);
+		//this.onChunkEvent(event, false);
 	}
 }

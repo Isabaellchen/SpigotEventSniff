@@ -11,21 +11,28 @@ import rocks.isor.eventsniff.eventsniff.Utils;
 
 public class VehicleCollisionEventListener implements Listener, CanOutputEvent {
 
-	private void onVehicleCollisionEvent(VehicleCollisionEvent vehicleCollisionEvent) {
+	private boolean isVerbose;
+
+	public VehicleCollisionEventListener(boolean isVerbose) {
+		this.isVerbose = isVerbose;
+	}
+
+	private void onVehicleCollisionEvent(VehicleCollisionEvent vehicleCollisionEvent, boolean verbose) {
 		Location location = vehicleCollisionEvent.getVehicle().getLocation();
 		String coordinates = Utils.generateCoordinateString(location);
+		String uuid = vehicleCollisionEvent.getVehicle().getUniqueId().toString();
 
-		output(vehicleCollisionEvent, coordinates);
+		throttledOutput(vehicleCollisionEvent, uuid ,coordinates, isVerbose || verbose);
 	}
 
 	@EventHandler
 	public void onVehicleBlockCollisionEvent(VehicleBlockCollisionEvent event) {
-		this.onVehicleCollisionEvent(event);
+		this.onVehicleCollisionEvent(event, false);
 	}
 
 	@EventHandler
 	public void onVehicleEntityCollisionEvent(VehicleEntityCollisionEvent event) {
-		this.onVehicleCollisionEvent(event);
+		this.onVehicleCollisionEvent(event, false);
 	}
 
 }

@@ -13,8 +13,12 @@ import java.util.concurrent.TimeUnit;
 
 public interface CanOutputEvent {
 
-	default void output(Event event, String message) {
+	default void output(Event event, String message, boolean verbose) {
 		String eventName = event.getEventName();
+
+		if (verbose) {
+			message += " - " + Utils.generateJsonString(event);
+		}
 
 		Bukkit.getLogger().info(eventName + " fired: " + message);
 	}
@@ -22,32 +26,32 @@ public interface CanOutputEvent {
 	/**
 	 * Map of EventNames of Sets of uniqueIdentifiers
 	 */
-	Map<String, Set<String>> debounceCache = new HashMap<>();
+	Map<String, Set<String>> throttleCache = new HashMap<>();
 
 	/**
 	 * Scheduled executor to clean up the mess
 	 */
 	ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
-	default void throttledOutput(Event event, String uniqueIdentifier, String message) {
-		throttledOutput(event, uniqueIdentifier, message, 1, TimeUnit.MINUTES);
+	default void throttledOutput(Event event, String uniqueIdentifier, String message, boolean verbose) {
+		throttledOutput(event, uniqueIdentifier, message, verbose, 1, TimeUnit.MINUTES);
 	}
 
-	default void throttledOutput(Event event, String uniqueIdentifier, String message, long delay, TimeUnit timeUnit) {
+	default void throttledOutput(Event event, String uniqueIdentifier, String message, boolean verbose, long delay, TimeUnit timeUnit) {
 		String eventName = event.getEventName();
-		Set<String> cache = debounceCache.getOrDefault(eventName, new HashSet<>());
+		Set<String> cache = throttleCache.getOrDefault(eventName, new HashSet<>());
 
 		if (!cache.contains(uniqueIdentifier)) {
 
-			output(event, message);
+			output(event, message, verbose);
 
 			cache.add(uniqueIdentifier);
-			debounceCache.put(eventName, cache);
+			throttleCache.put(eventName, cache);
 
 			executor.schedule(() -> {
 				cache.remove(uniqueIdentifier);
 				if (cache.isEmpty()) {
-					debounceCache.remove(eventName);
+					throttleCache.remove(eventName);
 				}
 			}, delay, timeUnit); // this record self-destructs after the set delay
 		}

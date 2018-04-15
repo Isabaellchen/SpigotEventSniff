@@ -9,18 +9,24 @@ import rocks.isor.eventsniff.eventsniff.CanOutputEvent;
 
 public class PluginEventListener implements Listener, CanOutputEvent {
 
-	private void onPluginEvent(PluginEvent pluginEvent) {
-		output(pluginEvent, "LOCALHOST");
+	private boolean isVerbose;
+
+	public PluginEventListener(boolean isVerbose) {
+		this.isVerbose = isVerbose;
+	}
+
+	private void onPluginEvent(PluginEvent pluginEvent, boolean verbose) {
+		output(pluginEvent, "LOCALHOST", isVerbose || verbose);
 	}
 
 	@EventHandler
 	public void onPluginDisableEvent(PluginDisableEvent event) {
-		this.onPluginEvent(event);
+		this.onPluginEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPluginEnableEvent(PluginEnableEvent event) {
-		this.onPluginEvent(event);
+		this.onPluginEvent(event, false);
 	}
 
 }

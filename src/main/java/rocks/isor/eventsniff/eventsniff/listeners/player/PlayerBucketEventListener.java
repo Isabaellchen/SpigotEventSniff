@@ -10,19 +10,25 @@ import rocks.isor.eventsniff.eventsniff.CanOutputEvent;
 
 public class PlayerBucketEventListener implements Listener, CanOutputEvent {
 
-	private void onPlayerBucketEvent(PlayerBucketEvent playerBucketEvent) {
+	private boolean isVerbose;
+
+	public PlayerBucketEventListener(boolean isVerbose) {
+		this.isVerbose = isVerbose;
+	}
+
+	private void onPlayerBucketEvent(PlayerBucketEvent playerBucketEvent, boolean verbose) {
 		String playerName = playerBucketEvent.getPlayer().getName();
 
-		output(playerBucketEvent, playerName);
+		output(playerBucketEvent, playerName, isVerbose || verbose);
 	}
 
 	@EventHandler
 	public void onPlayerBucketEmptyEvent(PlayerBucketEmptyEvent event) {
-		this.onPlayerBucketEvent(event);
+		this.onPlayerBucketEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerBucketFillEvent(PlayerBucketFillEvent event) {
-		this.onPlayerBucketEvent(event);
+		this.onPlayerBucketEvent(event, false);
 	}
 }

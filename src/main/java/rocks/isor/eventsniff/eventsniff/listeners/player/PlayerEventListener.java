@@ -45,205 +45,211 @@ import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 import rocks.isor.eventsniff.eventsniff.CanOutputEvent;
 
 public class PlayerEventListener implements Listener, CanOutputEvent {
+	
+	private boolean isVerbose;
 
-	private void onPlayerEvent(PlayerEvent playerEvent) {
+	public PlayerEventListener(boolean isVerbose) {
+		this.isVerbose = isVerbose;
+	}
+
+	private void onPlayerEvent(PlayerEvent playerEvent, boolean verbose) {
 		String playerName = playerEvent.getPlayer().getName();
 
-		output(playerEvent, playerName);
+		output(playerEvent, playerName, isVerbose || verbose);
 	}
 
 	@EventHandler
 	public void onAsyncPlayerChatEvent(AsyncPlayerChatEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerAchievementAwardedEvent(PlayerAchievementAwardedEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerAdvancementDoneEvent(PlayerAdvancementDoneEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerAnimationEvent(PlayerAnimationEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerBedEnterEvent(PlayerBedEnterEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerBedLeaveEvent(PlayerBedLeaveEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerChangedMainHandEvent(PlayerChangedMainHandEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerChatEvent(PlayerChatEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerChatTabCompleteEvent(PlayerChatTabCompleteEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerCommandPreprocessEvent(PlayerCommandPreprocessEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerDropItemEvent(PlayerDropItemEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerEditBookEvent(PlayerEditBookEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerEggThrowEvent(PlayerEggThrowEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerExpChangeEvent(PlayerExpChangeEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerFishEvent(PlayerFishEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerGameModeChangeEvent(PlayerGameModeChangeEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerInteractEvent(PlayerInteractEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerItemBreakEvent(PlayerItemBreakEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerItemConsumeEvent(PlayerItemConsumeEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerItemDamageEvent(PlayerItemDamageEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerItemHeldEvent(PlayerItemHeldEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerItemMendEvent(PlayerItemMendEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerJoinEvent(PlayerJoinEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerKickEvent(PlayerKickEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerLevelChangeEvent(PlayerLevelChangeEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerLocaleChangeEvent(PlayerLocaleChangeEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerLoginEvent(PlayerLoginEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerQuitEvent(PlayerQuitEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerResourcePackStatusEvent(PlayerResourcePackStatusEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerRespawnEvent(PlayerRespawnEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerShearEntityEvent(PlayerShearEntityEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerSpawnLocationEvent(PlayerSpawnLocationEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerStatisticIncrementEvent(PlayerStatisticIncrementEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerSwapHandItemsEvent(PlayerSwapHandItemsEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerToggleFlightEvent(PlayerToggleFlightEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerToggleSneakEvent(PlayerToggleSneakEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerToggleSprintEvent(PlayerToggleSprintEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerVelocityEvent(PlayerVelocityEvent event) {
-		this.onPlayerEvent(event);
+		this.onPlayerEvent(event, false);
 	}
 }

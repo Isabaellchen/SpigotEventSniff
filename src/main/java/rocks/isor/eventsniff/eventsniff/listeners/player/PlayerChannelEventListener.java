@@ -10,20 +10,26 @@ import rocks.isor.eventsniff.eventsniff.CanOutputEvent;
 
 public class PlayerChannelEventListener implements Listener, CanOutputEvent {
 
+	private boolean isVerbose;
+
+	public PlayerChannelEventListener(boolean isVerbose) {
+		this.isVerbose = isVerbose;
+	}
+
 	@EventHandler
-	public void onPlayerChannelEvent(PlayerChannelEvent playerChannelEvent) {
+	public void onPlayerChannelEvent(PlayerChannelEvent playerChannelEvent, boolean verbose) {
 		String playerName = playerChannelEvent.getPlayer().getName();
 
-		output(playerChannelEvent, playerName);
+		output(playerChannelEvent, playerName, isVerbose || verbose);
 	}
 
 	@EventHandler
 	public void onPlayerRegisterChannelEvent(PlayerRegisterChannelEvent event) {
-		this.onPlayerChannelEvent(event);
+		this.onPlayerChannelEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerUnregisterChannelEvent(PlayerUnregisterChannelEvent event) {
-		this.onPlayerChannelEvent(event);
+		this.onPlayerChannelEvent(event, false);
 	}
 }

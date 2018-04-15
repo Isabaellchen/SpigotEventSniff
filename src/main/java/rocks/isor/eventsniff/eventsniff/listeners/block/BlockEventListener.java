@@ -32,85 +32,90 @@ import rocks.isor.eventsniff.eventsniff.Utils;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class BlockEventListener implements Listener, CanOutputEvent {
+
+	private boolean isVerbose;
+
+	public BlockEventListener(boolean isVerbose) {
+		this.isVerbose = isVerbose;
+	}
 
 	/**
 	 * Generic Block Event processing
 	 * @param blockEvent the event to be processed
 	 */
-	private void onBlockEvent(BlockEvent blockEvent) {
+	private void onBlockEvent(BlockEvent blockEvent, boolean verbose) {
 		Location location = blockEvent.getBlock().getLocation();
 		String coordinateString = Utils.generateCoordinateString(location);
 		String blockType = blockEvent.getBlock().getType().name();
 
-		output(blockEvent, blockType + " at " + coordinateString);
+		output(blockEvent, blockType + " at " + coordinateString, isVerbose || verbose);
 	}
 
 	@EventHandler
 	public void onBlockBreakEvent(BlockBreakEvent event) {
-		this.onBlockEvent(event);
+		this.onBlockEvent(event, false);
 	}
 
 	@EventHandler
 	public void onBlockBurnEvent(BlockBurnEvent event) {
-		this.onBlockEvent(event);
+		this.onBlockEvent(event, false);
 	}
 
 	@EventHandler
 	public void onBlockCanBuildEvent(BlockCanBuildEvent event) {
-		this.onBlockEvent(event);
+		this.onBlockEvent(event, false);
 	}
 
 	@EventHandler
 	public void onBlockDamageEvent(BlockDamageEvent event) {
-		this.onBlockEvent(event);
+		this.onBlockEvent(event, false);
 	}
 
 	@EventHandler
 	public void onBlockDispenseEvent(BlockDispenseEvent event) {
-		this.onBlockEvent(event);
+		this.onBlockEvent(event, false);
 	}
 
 	@EventHandler
 	public void onBlockExpEvent(BlockExpEvent event) {
-		this.onBlockEvent(event);
+		this.onBlockEvent(event, false);
 	}
 
 	@EventHandler
 	public void onBlockExplodeEvent(BlockExplodeEvent event) {
-		this.onBlockEvent(event);
+		this.onBlockEvent(event, false);
 	}
 
 	@EventHandler
 	public void onBlockFadeEvent(BlockFadeEvent event) {
-		this.onBlockEvent(event);
+		this.onBlockEvent(event, false);
 	}
 
 	@EventHandler
 	public void onBlockFormEvent(BlockFormEvent event) {
-		this.onBlockEvent(event);
+		this.onBlockEvent(event, false);
 	}
 
 	@EventHandler
 	public void onBlockFromToEvent(BlockFromToEvent event) {
-		this.onBlockEvent(event);
+		this.onBlockEvent(event, false);
 	}
 
 	@EventHandler
 	public void onBlockGrowEvent(BlockGrowEvent event) {
-		this.onBlockEvent(event);
+		this.onBlockEvent(event, false);
 	}
 
 	@EventHandler
 	public void onBlockIgniteEvent(BlockIgniteEvent event) {
-		this.onBlockEvent(event);
+		this.onBlockEvent(event, false);
 	}
 
 	@EventHandler
 	public void onBlockMultiPlaceEvent(BlockMultiPlaceEvent event) {
-		this.onBlockEvent(event);
+		this.onBlockEvent(event, false);
 	}
 
 	private Set<String> ignoredEventSourceTypes = new HashSet<>(Arrays.asList("GRASS", "DIRT"));
@@ -127,46 +132,46 @@ public class BlockEventListener implements Listener, CanOutputEvent {
 		Location location = event.getBlock().getLocation();
 		String coordinateString = Utils.generateCoordinateString(location);
 
-		throttledOutput(event, coordinateString, " Triggered by " + eventSourceType + ", affects " + targetBlockType + " at " + coordinateString);
+		throttledOutput(event, coordinateString, " Triggered by " + eventSourceType + ", affects " + targetBlockType + " at " + coordinateString, isVerbose || false);
 	}
 
 	@EventHandler
 	public void onBlockPlaceEvent(BlockPlaceEvent event) {
-		this.onBlockEvent(event);
+		this.onBlockEvent(event, false);
 	}
 
 	@EventHandler
 	public void onBlockRedstoneEvent(BlockRedstoneEvent event) {
-		this.onBlockEvent(event);
+		this.onBlockEvent(event, false);
 	}
 
 	@EventHandler
 	public void onBlockSpreadEvent(BlockSpreadEvent event) {
-		this.onBlockEvent(event);
+		this.onBlockEvent(event, false);
 	}
 
 	@EventHandler
 	public void onCauldronLevelChangeEvent(CauldronLevelChangeEvent event) {
-		this.onBlockEvent(event);
+		this.onBlockEvent(event, false);
 	}
 
 	@EventHandler
 	public void onEntityBlockFormEvent(EntityBlockFormEvent event) {
-		this.onBlockEvent(event);
+		this.onBlockEvent(event, false);
 	}
 
 	@EventHandler
 	public void onLeavesDecayEvent(LeavesDecayEvent event) {
-		this.onBlockEvent(event);
+		this.onBlockEvent(event, false);
 	}
 
 	@EventHandler
 	public void onNotePlayEvent(NotePlayEvent event) {
-		this.onBlockEvent(event);
+		this.onBlockEvent(event, false);
 	}
 
 	@EventHandler
 	public void onSignChangeEvent(SignChangeEvent event) {
-		this.onBlockEvent(event);
+		this.onBlockEvent(event, false);
 	}
 }

@@ -10,24 +10,30 @@ import rocks.isor.eventsniff.eventsniff.CanOutputEvent;
 
 public class WeatherEventListener implements Listener, CanOutputEvent {
 
-	private void onWeatherEvent(WeatherEvent weatherEvent) {
+	private boolean isVerbose;
+
+	public WeatherEventListener(boolean isVerbose) {
+		this.isVerbose = isVerbose;
+	}
+
+	private void onWeatherEvent(WeatherEvent weatherEvent, boolean verbose) {
 		String worldName = weatherEvent.getWorld().getName();
 
-		output(weatherEvent, worldName);
+		output(weatherEvent, worldName, isVerbose || verbose);
 	}
 
 	@EventHandler
 	public void onLightningStrikeEvent(LightningStrikeEvent event) {
-		this.onWeatherEvent(event);
+		this.onWeatherEvent(event, false);
 	}
 
 	@EventHandler
 	public void onThunderChangeEvent(ThunderChangeEvent event) {
-		this.onWeatherEvent(event);
+		this.onWeatherEvent(event, false);
 	}
 
 	@EventHandler
 	public void onWeatherChangeEvent(WeatherChangeEvent event) {
-		this.onWeatherEvent(event);
+		this.onWeatherEvent(event, false);
 	}
 }

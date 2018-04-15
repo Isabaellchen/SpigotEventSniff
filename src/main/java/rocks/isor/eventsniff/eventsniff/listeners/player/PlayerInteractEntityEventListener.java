@@ -9,20 +9,26 @@ import rocks.isor.eventsniff.eventsniff.CanOutputEvent;
 
 public class PlayerInteractEntityEventListener implements Listener, CanOutputEvent {
 
+	private boolean isVerbose;
+
+	public PlayerInteractEntityEventListener(boolean isVerbose) {
+		this.isVerbose = isVerbose;
+	}
+
 	@EventHandler
-	public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent playerInteractEntityEvent) {
+	public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent playerInteractEntityEvent, boolean verbose) {
 		String playerName = playerInteractEntityEvent.getPlayer().getName();
 
-		output(playerInteractEntityEvent, playerName);
+		output(playerInteractEntityEvent, playerName, isVerbose || verbose);
 	}
 
 	@EventHandler
 	public void onPlayerArmorStandManipulateEvent(PlayerArmorStandManipulateEvent event) {
-		this.onPlayerInteractEntityEvent(event);
+		this.onPlayerInteractEntityEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerInteractAtEntityEvent(PlayerInteractAtEntityEvent event) {
-		this.onPlayerInteractEntityEvent(event);
+		this.onPlayerInteractEntityEvent(event, false);
 	}
 }

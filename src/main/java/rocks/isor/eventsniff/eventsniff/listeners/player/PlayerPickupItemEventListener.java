@@ -8,16 +8,26 @@ import rocks.isor.eventsniff.eventsniff.CanOutputEvent;
 
 public class PlayerPickupItemEventListener implements Listener, CanOutputEvent {
 
-	@EventHandler
-	public void onPlayerPickupItemEvent(PlayerPickupItemEvent playerPickupItemEvent) {
+	private boolean isVerbose;
+
+	public PlayerPickupItemEventListener(boolean isVerbose) {
+		this.isVerbose = isVerbose;
+	}
+
+	private void onPlayerPickupItemEvent(PlayerPickupItemEvent playerPickupItemEvent, boolean verbose) {
 		String playerName = playerPickupItemEvent.getPlayer().getName();
 
-		output(playerPickupItemEvent, playerName);
+		output(playerPickupItemEvent, playerName, isVerbose || verbose);
+	}
+
+	@EventHandler
+	public void onPlayerPickupItemEvent(PlayerPickupItemEvent event) {
+		this.onPlayerPickupItemEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerPickupArrowEvent(PlayerPickupArrowEvent event) {
-		this.onPlayerPickupItemEvent(event);
+		this.onPlayerPickupItemEvent(event, false);
 	}
 
 }

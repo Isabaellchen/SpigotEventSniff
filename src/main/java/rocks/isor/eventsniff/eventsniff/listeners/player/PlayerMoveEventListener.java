@@ -10,19 +10,29 @@ import rocks.isor.eventsniff.eventsniff.Utils;
 
 public class PlayerMoveEventListener implements Listener, CanOutputEvent {
 
-	@EventHandler
-	public void onPlayerMoveEvent(PlayerMoveEvent playerMoveEvent) {
+	private boolean isVerbose;
+
+	public PlayerMoveEventListener(boolean isVerbose) {
+		this.isVerbose = isVerbose;
+	}
+
+	private void onPlayerMoveEvent(PlayerMoveEvent playerMoveEvent, boolean verbose) {
 		String playerName = playerMoveEvent.getPlayer().getName();
 		Location to = playerMoveEvent.getTo();
 
 		String toCoordinates = Utils.generateCoordinateString(to);
 
-		throttledOutput(playerMoveEvent, playerName, playerName +" moving to " + toCoordinates);
+		throttledOutput(playerMoveEvent, playerName, playerName +" moving to " + toCoordinates, isVerbose || verbose);
+	}
+
+	@EventHandler
+	public void onPlayerMoveEvent(PlayerMoveEvent event) {
+		this.onPlayerMoveEvent(event, false);
 	}
 
 	@EventHandler
 	public void onPlayerTeleportEvent(PlayerTeleportEvent event) {
-		this.onPlayerMoveEvent(event);
+		this.onPlayerMoveEvent(event, false);
 	}
 
 }
