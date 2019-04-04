@@ -55,7 +55,7 @@ public class EventSniffPlugin extends JavaPlugin {
 		listeners.add(new PluginEventListener(false));
 		listeners.add(new ServerCommandEventListener(false));
 		listeners.add(new ServiceEventListener(false));
-		listeners.add(new VehicleEventListener(false));
+		//listeners.add(new VehicleEventListener(false));
 		listeners.add(new VehicleCollisionEventListener(false));
 		listeners.add(new WeatherEventListener(false));
 		listeners.add(new WorldEventListener(false));

@@ -223,10 +223,10 @@ public class PlayerEventListener implements Listener, CanOutputEvent {
 		this.onPlayerEvent(event, false);
 	}
 
-	@EventHandler
+	/*@EventHandler
 	public void onPlayerStatisticIncrementEvent(PlayerStatisticIncrementEvent event) {
 		this.onPlayerEvent(event, false);
-	}
+	}*/
 
 	@EventHandler
 	public void onPlayerSwapHandItemsEvent(PlayerSwapHandItemsEvent event) {

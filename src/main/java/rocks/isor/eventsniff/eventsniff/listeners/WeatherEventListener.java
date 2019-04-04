@@ -24,7 +24,7 @@ public class WeatherEventListener implements Listener, CanOutputEvent {
 
 	@EventHandler
 	public void onLightningStrikeEvent(LightningStrikeEvent event) {
-		this.onWeatherEvent(event, false);
+		this.onWeatherEvent(event, true);
 	}
 
 	@EventHandler

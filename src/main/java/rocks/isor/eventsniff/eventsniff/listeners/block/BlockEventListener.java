@@ -46,11 +46,15 @@ public class BlockEventListener implements Listener, CanOutputEvent {
 	 * @param blockEvent the event to be processed
 	 */
 	private void onBlockEvent(BlockEvent blockEvent, boolean verbose) {
+		onBlockEvent(blockEvent, verbose, 1);
+	}
+
+	private void onBlockEvent(BlockEvent blockEvent, boolean verbose, int recursionDepth) {
 		Location location = blockEvent.getBlock().getLocation();
 		String coordinateString = Utils.generateCoordinateString(location);
 		String blockType = blockEvent.getBlock().getType().name();
 
-		output(blockEvent, blockType + " at " + coordinateString, isVerbose || verbose);
+		output(blockEvent, blockType + " at " + coordinateString, isVerbose || verbose, recursionDepth);
 	}
 
 	@EventHandler
@@ -100,7 +104,7 @@ public class BlockEventListener implements Listener, CanOutputEvent {
 
 	@EventHandler
 	public void onBlockFromToEvent(BlockFromToEvent event) {
-		this.onBlockEvent(event, false);
+		this.onBlockEvent(event, true, 4);
 	}
 
 	@EventHandler
@@ -119,6 +123,7 @@ public class BlockEventListener implements Listener, CanOutputEvent {
 	}
 
 	private Set<String> ignoredEventSourceTypes = new HashSet<>(Arrays.asList("GRASS", "DIRT"));
+	private Set<String> filterEventTargetTypes = new HashSet<>(Arrays.asList("STONE_BUTTON", "LEVER"));
 
 	@EventHandler
 	public void onBlockPhysicsEvent(BlockPhysicsEvent event) {
@@ -132,7 +137,9 @@ public class BlockEventListener implements Listener, CanOutputEvent {
 		Location location = event.getBlock().getLocation();
 		String coordinateString = Utils.generateCoordinateString(location);
 
-		throttledOutput(event, coordinateString, " Triggered by " + eventSourceType + ", affects " + targetBlockType + " at " + coordinateString, isVerbose || false);
+		if (filterEventTargetTypes.contains(targetBlockType)) {
+			throttledOutput(event, coordinateString, " Triggered by " + eventSourceType + ", affects " + targetBlockType + " at " + coordinateString, isVerbose || true);
+		}
 	}
 
 	@EventHandler

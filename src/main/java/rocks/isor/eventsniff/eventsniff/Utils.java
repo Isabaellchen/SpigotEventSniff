@@ -18,11 +18,30 @@ public class Utils {
 
 	private static Pattern GETTER_METHODS = Pattern.compile("^(get|has|is)\\w+");
 
+	private static Set<String> excludedClasses = new HashSet<>(Arrays.asList(
+			"Class", // Not interested in java itself
+			"File" // Files are a tree of paths
+	));
+
+	private static Set<String> excludedMethods = new HashSet<>(Arrays.asList(
+			"hashCode",
+			"getRandom", // Causes StackOverflowException
+			"getChunk", // Chunks are too big to marshal
+			"getWorld", // Worlds are even bigger
+			"getRegisteredListeners", // Lots of recursion
+			"getHandlerLists",
+			"getCraftWorld"
+	));
+
 	public static String generateJsonString(Object o) {
-		return recursiveObjectReader(o, new HashSet<>(), null, 0);
+		return generateJsonString(o, 0);
 	}
 
-	private static String recursiveObjectReader(Object o, Set<String> parentObjects, Collection parentCollection, int depth) {
+	public static String generateJsonString(Object o, int recursionDepth) {
+		return recursiveObjectReader(o, new HashSet<>(), null, 0, recursionDepth);
+	}
+
+	private static String recursiveObjectReader(Object o, Set<String> parentObjects, Collection parentCollection, int depth, int recursionDepth) {
 
 		if (o == null) {
 			return "null";
@@ -39,12 +58,8 @@ public class Utils {
 			return "\"" + o + "\"";
 		}
 
-		Set<String> excluded = new HashSet<>(Arrays.asList(
-				"Class", // Not interested in java itself
-				"File" // Files are a tree of paths, convoluting the json
-		));
 		String simpleName = clazz.getSimpleName();
-		if (excluded.contains(simpleName)) {
+		if (excludedClasses.contains(simpleName)) {
 			Bukkit.getLogger().finer(indent + "Excluded class " + simpleName);
 			return "{}";
 		}
@@ -61,13 +76,7 @@ public class Utils {
 		Method[] methods = clazz.getDeclaredMethods();
 		StringBuilder json = new StringBuilder("{");
 
-		Set<String> excludedMethods = new HashSet<>(Arrays.asList(
-				"getRandom", // Causes StackOverflowException
-				"getChunk", // Chunks are too big to marshal
-				"getWorld", // Worlds are even bigger
-				"getRegisteredListeners", // Lots of recursion
-				"getHandlerLists" // ... same
-		));
+
 
 		try {
 			for (Method method : methods) {
@@ -102,8 +111,10 @@ public class Utils {
 					if (returnType.isPrimitive()) {
 						String result = String.valueOf(method.invoke(o));
 						json.append(result);
+
 					} else if (returnType.equals(String.class)) {
 						json.append("\"").append(method.invoke(o)).append("\"");
+
 					} else if (returnType.isArray() || Collection.class.isAssignableFrom(returnType)) {
 
 						Collection collection;
@@ -123,10 +134,16 @@ public class Utils {
 						Bukkit.getLogger().finer(indent + "\t\tlist " + (returnType.getComponentType() == null ? "null" : returnType.getComponentType().getSimpleName()));
 						if (collection != null && !collection.isEmpty()) {
 							if (!collection.equals(parentCollection)) {
+
 								for (Object item : collection) {
-									json.append(recursiveObjectReader(item, clonedHistory, collection, depth + 1));
+									if (recursionDepth > 0) {
+										json.append(recursiveObjectReader(item, clonedHistory, collection, depth + 1, recursionDepth - 1));
+									} else {
+										json.append(item.getClass().getSimpleName());
+									}
 									json.append(",");
 								}
+
 								if (json.charAt(json.length() - 1) == ',') {
 									json.deleteCharAt(json.length() - 1);
 								}
@@ -138,7 +155,26 @@ public class Utils {
 						json.append("]");
 					} else {
 						Bukkit.getLogger().finer(indent + "\t\tobject " + returnType.getSimpleName());
-						json.append(recursiveObjectReader(method.invoke(o), clonedHistory, parentCollection, depth + 1));
+						if (recursionDepth > 0) {
+							// There are validity checks that are failing on certain non legacy materials
+							Object result;
+
+							try {
+								result = method.invoke(o);
+							} catch (InvocationTargetException e) {
+								if (e.getCause() instanceof IllegalArgumentException) {
+									result = "Illegal method call, bad argument...";
+								} else {
+									throw e;
+								}
+							}
+
+							json.append(recursiveObjectReader(result, clonedHistory, parentCollection, depth + 1, recursionDepth - 1));
+
+						} else {
+							json.append(returnType.getSimpleName());
+
+						}
 					}
 
 					json.append(",");

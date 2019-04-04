@@ -96,13 +96,13 @@ public class EntityEventListener implements Listener, CanOutputEvent {
 		this.onEntityEvent(event, false);
 	}
 
-	@EventHandler
+	/*@EventHandler
 	public void onEntityAirChangeEvent(EntityAirChangeEvent event) {
 		int entityId = event.getEntity().getEntityId();
 		String entityTypeName = event.getEntity().getType().name();
 
 		throttledOutput(event, String.valueOf(entityId),"Triggered on " + entityTypeName, false);
-	}
+	}*/
 
 	@EventHandler
 	public void onEntityBreakDoorEvent(EntityBreakDoorEvent event) {
@@ -131,7 +131,7 @@ public class EntityEventListener implements Listener, CanOutputEvent {
 
 	@EventHandler
 	public void onEntityCombustEvent(EntityCombustEvent event) {
-		this.onEntityEvent(event, false);
+		this.onEntityEvent(event, true);
 	}
 
 	@EventHandler
@@ -151,7 +151,7 @@ public class EntityEventListener implements Listener, CanOutputEvent {
 
 	@EventHandler
 	public void onEntityDamageEvent(EntityDamageEvent event) {
-		this.onEntityEvent(event, false);
+		this.onEntityEvent(event, true);
 	}
 
 	@EventHandler

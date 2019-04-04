@@ -28,6 +28,7 @@ public class WorldEventListener implements Listener, CanOutputEvent {
 
 	@EventHandler
 	public void onPortalCreateEvent(PortalCreateEvent event) {
+
 		this.onWorldEvent(event, false);
 	}
 
