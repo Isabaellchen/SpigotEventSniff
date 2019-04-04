@@ -61,13 +61,13 @@ public class Utils {
 		String simpleName = clazz.getSimpleName();
 		if (excludedClasses.contains(simpleName)) {
 			Bukkit.getLogger().finer(indent + "Excluded class " + simpleName);
-			return "{}";
+			return "{\"--EXCLUDED CLASS--\": \""+ simpleName +"\"}";
 		}
 
 		String objectId = o.hashCode() + o.toString();
 		if (parentObjects.contains(objectId)) {
 			Bukkit.getLogger().finer(indent + "Cyclic Recursion detected " + simpleName);
-			return "{}";
+			return "{\"--CYCLIC RECURSION--\": \""+ objectId +"\"}";
 		}
 		Set<String> clonedHistory = new HashSet<>(parentObjects);
 		clonedHistory.add(objectId);
@@ -172,7 +172,7 @@ public class Utils {
 							json.append(recursiveObjectReader(result, clonedHistory, parentCollection, depth + 1, recursionDepth - 1));
 
 						} else {
-							json.append(returnType.getSimpleName());
+							json.append("{\"").append(returnType.getSimpleName()).append("\": \"--MAX DEPTH REACHED--\"}");
 
 						}
 					}
